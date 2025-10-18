@@ -1,45 +1,71 @@
-Overview
-========
+PySpark & Airflow ETL Pipeline (Bronze, Silver, Gold Layers)
 
-Welcome to Astronomer! This project was generated after you ran 'astro dev init' using the Astronomer CLI. This readme describes the contents of the project, as well as how to run Apache Airflow on your local machine.
+This project implements a robust, scalable Extract, Transform, Load (ETL) pipeline using PySpark for efficient data processing and Apache Airflow for workflow orchestration. It follows a modern data layering approach (Bronze, Silver, Gold) to manage data quality and complexity, ultimately serving business intelligence needs via PostgreSQL and Power BI.
 
-Project Contents
-================
+The entire environment is containerized using Docker (via the Astro CLI) for local development and reliable execution.
 
-Your Astro project contains the following files and folders:
+🧱 Architecture Overview
 
-- dags: This folder contains the Python files for your Airflow DAGs. By default, this directory includes one example DAG:
-    - `example_astronauts`: This DAG shows a simple ETL pipeline example that queries the list of astronauts currently in space from the Open Notify API and prints a statement for each astronaut. The DAG uses the TaskFlow API to define tasks in Python, and dynamic task mapping to dynamically print a statement for each astronaut. For more on how this DAG works, see our [Getting started tutorial](https://www.astronomer.io/docs/learn/get-started-with-airflow).
-- Dockerfile: This file contains a versioned Astro Runtime Docker image that provides a differentiated Airflow experience. If you want to execute other commands or overrides at runtime, specify them here.
-- include: This folder contains any additional files that you want to include as part of your project. It is empty by default.
-- packages.txt: Install OS-level packages needed for your project by adding them to this file. It is empty by default.
-- requirements.txt: Install Python packages needed for your project by adding them to this file. It is empty by default.
-- plugins: Add custom or community plugins for your project to this file. It is empty by default.
-- airflow_settings.yaml: Use this local-only file to specify Airflow Connections, Variables, and Pools instead of entering them in the Airflow UI as you develop DAGs in this project.
+The system is designed around a three-tier data lakehouse/data warehouse structure, ensuring raw data immutability, clean data standardization, and optimized business-ready aggregation.
 
-Deploy Your Project Locally
-===========================
+Key Components:
 
-Start Airflow on your local machine by running 'astro dev start'.
+Data Sources: Multiple input CSV files are consumed as raw data.
 
-This command will spin up five Docker containers on your machine, each for a different Airflow component:
+Orchestration (Apache Airflow): Manages the entire pipeline flow, ensuring tasks (PySpark jobs) execute in the correct sequence (Bronze ingestion -> Silver cleansing -> Gold aggregation).
 
-- Postgres: Airflow's Metadata Database
-- Scheduler: The Airflow component responsible for monitoring and triggering tasks
-- DAG Processor: The Airflow component responsible for parsing DAGs
-- API Server: The Airflow component responsible for serving the Airflow UI and API
-- Triggerer: The Airflow component responsible for triggering deferred tasks
+Processing (PySpark / Spark Cluster): Performs all data transformations, cleaning, and aggregation logic.
 
-When all five containers are ready the command will open the browser to the Airflow UI at http://localhost:8080/. You should also be able to access your Postgres Database at 'localhost:5432/postgres' with username 'postgres' and password 'postgres'.
+Data Storage: A combination of Parquet files (for scalable, immutable storage in Bronze/Silver) and PostgreSQL (for query-optimized, business-ready data in Gold).
 
-Note: If you already have either of the above ports allocated, you can either [stop your existing Docker containers or change the port](https://www.astronomer.io/docs/astro/cli/troubleshoot-locally#ports-are-not-available-for-my-local-airflow-webserver).
+Infrastructure (Docker / Astro CLI): Provides a containerized, reproducible environment for Airflow, Spark, and PostgreSQL.
 
-Deploy Your Project to Astronomer
-=================================
+Consumption (Power BI): Connects to the Gold Layer (PostgreSQL) to build reports and dashboards.
 
-If you have an Astronomer account, pushing code to a Deployment on Astronomer is simple. For deploying instructions, refer to Astronomer documentation: https://www.astronomer.io/docs/astro/deploy-code/
+📊 Data Layering Strategy
 
-Contact
-=======
+Layer
 
-The Astronomer CLI is maintained with love by the Astronomer team. To report a bug or suggest a change, reach out to our support.
+Purpose
+
+Key Transformations
+
+Storage
+
+Bronze
+
+Raw Data Ingestion
+
+No transformations. Data is loaded as-is from CSV into a durable format.
+
+Parquet Files
+
+Silver
+
+Cleaned & Standardized
+
+Data cleaning, type casting, handling nulls/duplicates, and basic standardization.
+
+Parquet Files
+
+Gold
+
+Business-Ready
+
+Feature engineering, aggregations, joining dimensions, and creating summarized tables optimized for BI queries.
+
+PostgreSQL
+
+⚙️ Technologies Used
+
+Orchestration: Apache Airflow
+
+Processing: PySpark (running on a local Spark Cluster)
+
+Database: PostgreSQL
+
+Containerization: Docker (managed via the Astro CLI)
+
+Infrastructure: Linux VM
+
+Visualization: Power BI (External Tool)
