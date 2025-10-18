@@ -89,29 +89,20 @@ CSV Files → Bronze Layer → Silver Layer → Gold Layer → Power BI
 pyspark_airflow_project/
 │
 ├── dags/                      # Airflow DAG definitions
-│   ├── bronze_layer_dag.py    # Raw data ingestion
-│   ├── silver_layer_dag.py    # Data cleaning pipeline
-│   └── gold_layer_dag.py      # Business metrics pipeline
-│
+│   ├── ETL_dag.py   
 ├── scripts/                   # PySpark processing scripts
-│   ├── bronze_processing.py   # Bronze layer transformations
-│   ├── silver_processing.py   # Silver layer transformations
-│   └── gold_processing.py     # Gold layer transformations
+│   ├── bronze_layer.py   # Bronze layer transformations
+│   ├── silver_layer.py   # Silver layer transformations
+│   └── gold_layer.py     # Gold layer transformations
 │
 ├── data/                      # Data storage
 │   ├── raw/                   # CSV source files
 │   ├── bronze/                # Bronze layer parquet files
-│   ├── silver/                # Silver layer parquet files
-│   └── gold/                  # Gold layer exports
+│   └── silver/                # Silver layer parquet files
 │
 ├── config/                    # Configuration files
 │   ├── spark_config.py        # Spark configurations
 │   └── db_config.py           # Database configurations
-│
-├── tests/                     # Unit tests
-│   ├── test_bronze.py
-│   ├── test_silver.py
-│   └── test_gold.py
 │
 ├── docker-compose.yml         # Docker services definition
 ├── Dockerfile                 # Airflow custom image
