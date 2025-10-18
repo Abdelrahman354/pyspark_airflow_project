@@ -1,71 +1,181 @@
-PySpark & Airflow ETL Pipeline (Bronze, Silver, Gold Layers)
+# PySpark Airflow Data Pipeline Project
 
-This project implements a robust, scalable Extract, Transform, Load (ETL) pipeline using PySpark for efficient data processing and Apache Airflow for workflow orchestration. It follows a modern data layering approach (Bronze, Silver, Gold) to manage data quality and complexity, ultimately serving business intelligence needs via PostgreSQL and Power BI.
+## 🎯 Project Overview
 
-The entire environment is containerized using Docker (via the Astro CLI) for local development and reliable execution.
+This project implements a comprehensive **Data Lakehouse Architecture** using Apache Airflow for orchestration and Apache Spark for data processing. The pipeline processes CSV data through a medallion architecture (Bronze, Silver, Gold layers) and provides business-ready analytics via Power BI dashboards.
 
-🧱 Architecture Overview
+## 🏗️ Architecture
 
-The system is designed around a three-tier data lakehouse/data warehouse structure, ensuring raw data immutability, clean data standardization, and optimized business-ready aggregation.
+![Project Architecture]()
 
-Key Components:
+### Architecture Overview
 
-Data Sources: Multiple input CSV files are consumed as raw data.
+The project follows a **three-tier medallion architecture** pattern:
 
-Orchestration (Apache Airflow): Manages the entire pipeline flow, ensuring tasks (PySpark jobs) execute in the correct sequence (Bronze ingestion -> Silver cleansing -> Gold aggregation).
+```
+CSV Files → Bronze Layer → Silver Layer → Gold Layer → Power BI
+              (Raw)      (Cleaned)     (Business-Ready)
+```
 
-Processing (PySpark / Spark Cluster): Performs all data transformations, cleaning, and aggregation logic.
+### Architecture Components
 
-Data Storage: A combination of Parquet files (for scalable, immutable storage in Bronze/Silver) and PostgreSQL (for query-optimized, business-ready data in Gold).
+- **Data Sources**: Multiple CSV files containing raw data
+- **Bronze Layer**: Raw data ingestion with no transformations (Parquet storage)
+- **Silver Layer**: Cleaned and standardized data (Parquet storage)
+- **Gold Layer**: Business-ready aggregated data (PostgreSQL storage)
+- **Processing Engine**: Apache Spark Cluster for distributed data processing
+- **Orchestration**: Apache Airflow for workflow management
+- **Visualization**: Power BI for business intelligence dashboards
+- **Infrastructure**: Docker containers via Astro CLI for Apache Airflow
 
-Infrastructure (Docker / Astro CLI): Provides a containerized, reproducible environment for Airflow, Spark, and PostgreSQL.
 
-Consumption (Power BI): Connects to the Gold Layer (PostgreSQL) to build reports and dashboards.
+## 🛠️ Technology Stack
 
-📊 Data Layering Strategy
+| Component | Technology |
+|-----------|-----------|
+| **Orchestration** | Apache Airflow |
+| **Data Processing** | Apache Spark (PySpark) |
+| **Storage - Bronze/Silver** | Parquet Files |
+| **Storage - Gold** | PostgreSQL |
+| **Container Runtime** | Docker |
+| **Deployment** | Astro CLI (Astronomer) |
+| **Visualization** | Power BI |
+| **Infrastructure** | Linux VM |
 
-Layer
+## 📊 Data Pipeline Layers
 
-Purpose
+### 🥉 Bronze Layer (Raw Data)
+- **Purpose**: Ingest raw data from CSV files
+- **Transformations**: None
+- **Storage Format**: Parquet
+- **Key Features**:
+  - Preserves original data structure
+  - Creates immutable raw data archive
+  - Enables data reprocessing if needed
 
-Key Transformations
+### 🥈 Silver Layer (Cleaned Data)
+- **Purpose**: Clean, standardize, and validate data
+- **Transformations**:
+  - Data type conversions
+  - Null value handling
+  - Data deduplication
+  - Schema standardization
+  - Data quality checks
+- **Storage Format**: Parquet
+- **Key Features**:
+  - Optimized for query performance
+  - Partitioned data storage
+  - Validated data quality
 
-Storage
+### 🥇 Gold Layer (Business-Ready Data)
+- **Purpose**: Provide aggregated, business-ready datasets
+- **Transformations**:
+  - Business metrics calculation
+  - Data aggregations
+  - Dimension modeling
+  - Feature engineering
+- **Storage Format**: PostgreSQL Database
+- **Key Features**:
+  - Optimized for BI tools
+  - Pre-calculated metrics
+  - Ready for visualization
 
-Bronze
+## 📁 Project Structure
 
-Raw Data Ingestion
+```
+pyspark_airflow_project/
+│
+├── dags/                      # Airflow DAG definitions
+│   ├── bronze_layer_dag.py    # Raw data ingestion
+│   ├── silver_layer_dag.py    # Data cleaning pipeline
+│   └── gold_layer_dag.py      # Business metrics pipeline
+│
+├── scripts/                   # PySpark processing scripts
+│   ├── bronze_processing.py   # Bronze layer transformations
+│   ├── silver_processing.py   # Silver layer transformations
+│   └── gold_processing.py     # Gold layer transformations
+│
+├── data/                      # Data storage
+│   ├── raw/                   # CSV source files
+│   ├── bronze/                # Bronze layer parquet files
+│   ├── silver/                # Silver layer parquet files
+│   └── gold/                  # Gold layer exports
+│
+├── config/                    # Configuration files
+│   ├── spark_config.py        # Spark configurations
+│   └── db_config.py           # Database configurations
+│
+├── tests/                     # Unit tests
+│   ├── test_bronze.py
+│   ├── test_silver.py
+│   └── test_gold.py
+│
+├── docker-compose.yml         # Docker services definition
+├── Dockerfile                 # Airflow custom image
+├── requirements.txt           # Python dependencies
+└── README.md                  # This file
+```
 
-No transformations. Data is loaded as-is from CSV into a durable format.
+## 🔄 Pipeline Workflow
 
-Parquet Files
+### DAG Execution Flow
 
-Silver
+```
+trigger → bronze_layer_dag → silver_layer_dag → gold_layer_dag → Power BI Refresh
+```
 
-Cleaned & Standardized
+1. **Bronze Layer DAG**
+   - Reads CSV files from source directory
+   - Converts to Parquet format
+   - Stores in Bronze layer
 
-Data cleaning, type casting, handling nulls/duplicates, and basic standardization.
+2. **Silver Layer DAG**
+   - Reads Bronze layer Parquet files
+   - Applies data cleaning transformations
+   - Validates data quality
+   - Stores cleaned data in Silver layer
 
-Parquet Files
+3. **Gold Layer DAG**
+   - Reads Silver layer data
+   - Performs business aggregations
+   - Calculates KPIs and metrics
+   - Loads data into PostgreSQL
 
-Gold
+4. **Power BI**
+   - Connects to PostgreSQL Gold layer
+   - Visualizes business metrics
+   - Provides interactive dashboards
 
-Business-Ready
+## 📊 Data Quality Checks
 
-Feature engineering, aggregations, joining dimensions, and creating summarized tables optimized for BI queries.
+The pipeline includes automated data quality validations:
+- Schema validation
+- Null value checks
+- Data type validation
+- Duplicate detection
+- Business rule validation
 
-PostgreSQL
+## 🎯 Key Features
 
-⚙️ Technologies Used
+✅ **Scalable Architecture**: Distributed processing using Spark cluster
+✅ **Data Quality**: Built-in validation at each layer
+✅ **Reproducible**: Immutable Bronze layer enables reprocessing
+✅ **Automated**: Airflow orchestrates all workflows
+✅ **Containerized**: Easy deployment using Docker and Astro CLI
+✅ **BI-Ready**: Optimized Gold layer for fast analytical queries
 
-Orchestration: Apache Airflow
+## 📖 Resources
 
-Processing: PySpark (running on a local Spark Cluster)
+- [Apache Airflow Documentation](https://airflow.apache.org/docs/)
+- [Apache Spark Documentation](https://spark.apache.org/docs/latest/)
+- [Astro CLI Documentation](https://docs.astronomer.io/astro/cli/overview)
+- [Medallion Architecture Pattern](https://www.databricks.com/glossary/medallion-architecture)
 
-Database: PostgreSQL
+## 👤 Author
 
-Containerization: Docker (managed via the Astro CLI)
+**Abdelrahman**
+- GitHub: [@Abdelrahman354](https://github.com/Abdelrahman354)
 
-Infrastructure: Linux VM
+---
 
-Visualization: Power BI (External Tool)
+⭐ **Star this repository if you find it helpful!**
