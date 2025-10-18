@@ -178,7 +178,7 @@ The pipeline includes automated data quality validations:
 
 **Abdelrahman**
 - GitHub: [@Abdelrahman354](https://github.com/Abdelrahman354)
-- Linkedin (https://www.linkedin.com/in/abdelrahman-ahmed-32983a22a)
+- Linkedin [@Abdelrahman Ahmed ](https://www.linkedin.com/in/abdelrahman-ahmed-32983a22a)
 
 ---
 
