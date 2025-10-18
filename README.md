@@ -9,6 +9,7 @@ This project implements a comprehensive **Data Lakehouse Architecture** using Ap
 ![Project Architecture](https://github.com/Abdelrahman354/pyspark_airflow_project/blob/main/images/Project_Architecture.png?raw=true)
 
 
+
 ### Architecture Overview
 
 The project follows a **three-tier medallion architecture** pattern:
