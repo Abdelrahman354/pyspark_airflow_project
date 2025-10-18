@@ -6,7 +6,7 @@ This project implements a comprehensive **Data Lakehouse Architecture** using Ap
 
 ## 🏗️ Architecture
 
-![Project Architecture]()
+![Project Architecture](https://github.com/Abdelrahman354/pyspark_airflow_project/blob/main/Project_Archite)
 
 ### Architecture Overview
 
